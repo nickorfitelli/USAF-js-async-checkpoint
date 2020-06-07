@@ -13,33 +13,45 @@ var fs = require("fs");
 
 // Use fs.readFile() method to read the file
 fs.readFile("input.txt", "utf8", function (err, data) {
-	// Display the file content
-	console.log(data);
+	//Pass in an interable (pokemon with types)
+	Promise.all(
+		data
+			.toString() 				//take input and convert to string
+			.split("\n") 				//split input by newline \n
+			.map((pokemon) => { 		//take the data and fetch each pokemon
+				return (
+					fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.trim()}`)
+						.then((result) => {
+							if (result.ok) {
+								return result.json();
+							} else {
+								throw new Error(`Error`);
+							}
+						})
 
-	//send content to array
-	var pokeArray = data.split("\n");
+						//take results of the fetch and map types out
+						.then((pokemonRecieved) => {
+							return `${pokemon}: ${pokemonRecieved.types
+								.map((x) => x.type.name)
+								.join(", ")}`;
+						})
 
-	//call the api querying for posts 
-      
-	for(var i=0;i<pokeArray.length;i++){ // for each post 
-		fetch(url+pokeArray[i])
-		.then(function(data){
-			console.log(data);
+						//catch any errors and send back error msg
+						.catch((error) => {
+							return `${error.message}`;
+						})
+				);
+			}) //END OF THE MAPPING
+	) //END OF PROMISE.ALL
+
+		//console log the results for each array in pokemonRecieved
+		.then((results) => {
+			results.forEach((element) => {
+				console.log(element);
+			});
+		})
+		//catch any errors and log
+		.catch((error) => {
+			console.log(error);
 		});
-	}
-
-
-})
-
-
-//call the api querying for posts 
-      
-        // for(var i=0;i<pokeArray.length;i++){ // for each post 
-        //     fetch(url+pokeArray[i])
-		// 	.then(response => response.json())
-		// 	.then(json => console.log(json))
-		// }
-
-// parse json for "type"
-
-
+});
