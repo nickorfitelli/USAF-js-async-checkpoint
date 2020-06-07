@@ -25,7 +25,7 @@ fs.readFile("input.txt", "utf8", function (err, data) {
 							if (result.ok) {
 								return result.json();
 							} else {
-								throw new Error(`Error`);
+								throw new Error(`Error cannot find ${pokemon}`);
 							}
 						})
 
