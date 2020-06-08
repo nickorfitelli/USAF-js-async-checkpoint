@@ -12,7 +12,7 @@ const fetch = require("node-fetch");
 var fs = require("fs");
 
 // Use fs.readFile() method to read the file
-fs.readFile("input.txt", "utf8", function (err, data) {
+fs.readFile("./input.txt", "utf8", function (err, data) {
 	//Pass in an interable (pokemon with types)
 	Promise.all(
 		data
@@ -31,7 +31,7 @@ fs.readFile("input.txt", "utf8", function (err, data) {
 
 						//take results of the fetch and map types out
 						.then((pokemonRecieved) => {
-							return `${pokemon}: ${pokemonRecieved.types
+							return pokemon + `: ${pokemonRecieved.types
 								.map((x) => x.type.name)
 								.join(", ")}`;
 						})
